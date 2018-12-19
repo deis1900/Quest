@@ -24,7 +24,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void addTask(Task task) {
-        if(getTaskList().contains(task)){
+        if(!getTaskList().contains(task)){
             tasksRepository.saveAndFlush(task);
         }
     }
@@ -47,6 +47,4 @@ public class TaskServiceImpl implements TaskService {
         }
         return tasks.get(currentQuestionID).getQuestion();
     }
-
-
 }
