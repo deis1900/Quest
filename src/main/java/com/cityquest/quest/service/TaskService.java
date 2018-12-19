@@ -10,6 +10,8 @@ public interface TaskService {
 
     void addTask(Task task);
 
+    void removeTask(Long id);
+
     List<Task> getTaskList();
 
     Question checkAndSendTask(Answer answer);

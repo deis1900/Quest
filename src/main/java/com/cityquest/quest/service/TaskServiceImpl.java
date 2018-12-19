@@ -24,9 +24,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public void addTask(Task task) {
-        if(!getTaskList().contains(task)){
+        if (!getTaskList().contains(task)) {
             tasksRepository.saveAndFlush(task);
         }
+    }
+
+    @Override
+    public void removeTask(Long id) {
+        tasksRepository.deleteById(id);
     }
 
     @Override
@@ -42,7 +47,7 @@ public class TaskServiceImpl implements TaskService {
         int currentQuestionID = userResponse.getId().intValue();
         Task currentTask = tasks.get(currentQuestionID);
 
-        if (currentTask.getAnswer().equals(userResponse)){
+        if (currentTask.getAnswer().equals(userResponse)) {
             return tasks.get(currentQuestionID + 1).getQuestion();
         }
         return tasks.get(currentQuestionID).getQuestion();

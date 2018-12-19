@@ -23,18 +23,21 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping(value = "list", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Task>> getTaskList () {
         return new ResponseEntity<>(taskService.getTaskList(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "add", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addNewTask(@Valid @RequestBody final Task task) {
-        System.out.println("!!!!!!" + task);
-        task.setId(null);
             taskService.addTask(task);
         return new ResponseEntity<>("New task is added.", HttpStatus.CREATED);
     }
 
-
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteTask(@PathVariable final String id){
+        Long taskId = Long.parseLong(id);
+        taskService.removeTask(taskId);
+        return new ResponseEntity<>("Row with " + id + " is deleted", HttpStatus.OK);
+    }
 }
