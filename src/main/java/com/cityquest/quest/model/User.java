@@ -2,30 +2,35 @@ package com.cityquest.quest.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Size(min=2, message="Name should have at least 2 characters")
     @Column
     private String username;
 
+    @NotNull(message = "Current question(issue) should have been set.")
     @Column
     private Long currentIssue;
 
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Question.class)
     @JoinColumn(name = "id")
     private Question currentQuestion;
 
-    @OneToMany(cascade = CascadeType.ALL, targetEntity= Answer.class)
-    @JoinColumn(name = "id")
-    private List<Answer> answers;
+    @OneToMany(cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Assumption> assumptions = new ArrayList<>();
 
     public User() {
     }
@@ -54,12 +59,16 @@ public class User {
         this.currentQuestion = currentQuestion;
     }
 
-    public List<Answer> getAnswers() {
-        return answers;
+    public List<Assumption> getAssumptions() {
+        return assumptions;
     }
 
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
+    public void addAssumptions(Assumption assumption) {
+        this.assumptions.add(assumption);
+    }
+
+    public void removeAssumptions(Assumption assumption) {
+        this.assumptions.remove(assumption);
     }
 
     public Long getCurrentIssue() {
@@ -77,7 +86,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", currentIssue=" + currentIssue +
                 ", currentQuestion=" + currentQuestion +
-                ", answers=" + answers +
+                ", assumptions=" + assumptions +
                 '}';
     }
 }

@@ -2,22 +2,21 @@ package com.cityquest.quest.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 
 @Entity
-@Table(name = "answers")
-public class Answer implements Serializable {
+@Table(name = "assumptions")
+public class Assumption {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
 
-    @Size(min = 1, message = "Answer should have at least 1 characters")
-    @Column(name = "answer")
-    private String answer;
+    @Size(min = 1, message = "Assumption should have at least 1 characters")
+    @Column(name = "assumption")
+    private String assumption;
 
-    public Answer() {
+    public Assumption() {
     }
 
     public Long getId() {
@@ -28,19 +27,19 @@ public class Answer implements Serializable {
         this.id = id;
     }
 
-    public String getAnswer() {
-        return answer;
+    public String getAssumption() {
+        return assumption;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAssumption(String assumption) {
+        this.assumption = assumption;
     }
 
     @Override
     public String toString() {
-        return "Answer{" +
+        return "Assumption{" +
                 "id=" + id +
-                ", answer='" + answer + '\'' +
+                ", assumption='" + assumption + '\'' +
                 '}';
     }
 }

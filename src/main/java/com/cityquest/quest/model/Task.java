@@ -1,22 +1,24 @@
 package com.cityquest.quest.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "tasks")
-public class Task {
+public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(updatable = false, nullable = false)
     private Long id;
 
-    @NotEmpty
+    @NotNull
     @OneToOne(orphanRemoval = true)
     private Question question;
 
-    @NotEmpty
-    @OneToOne(orphanRemoval = true, fetch = FetchType.LAZY)
+    @NotNull
+    @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER)
     private Answer answer;
 
     public Task() {

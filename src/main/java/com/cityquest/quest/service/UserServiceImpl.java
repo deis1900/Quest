@@ -1,6 +1,8 @@
 package com.cityquest.quest.service;
 
 import com.cityquest.quest.model.Answer;
+import com.cityquest.quest.model.Assumption;
+import com.cityquest.quest.model.Question;
 import com.cityquest.quest.model.User;
 import com.cityquest.quest.repository.UserRepository;
 import com.cityquest.quest.utility.UsernameNotFoundExeption;
@@ -23,12 +25,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void update(String username, Answer answer){
-        List<Answer> answers = new ArrayList<>();
-        answers.add(answer);
+    public void update(String username, Long currentIssue, Assumption assumption) {
         User user = userRepository.findByUsername(username).orElseThrow(() ->
-        new UsernameNotFoundExeption("No user found with username " + username));
-        user.setAnswers(answers);
+                new UsernameNotFoundExeption("No user found with username " + username));
+        user.addAssumptions(assumption);
+        user.setCurrentIssue(currentIssue);
         userRepository.saveAndFlush(user);
     }
 
@@ -36,15 +37,25 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User findUser(String username) {
         return userRepository.findByUsername(username).orElseThrow(() ->
-        new UsernameNotFoundExeption("User " + username + " was not found. "));
+                new UsernameNotFoundExeption("User " + username + " was not found. "));
     }
 
     @Override
     @Transactional
     public void addNewUser(User user) {
-        if(userRepository.findAll().contains(user)){
-            userRepository.saveAndFlush(user);
+        if (!userRepository.findAll().contains(user)) {
+            user.setCurrentIssue(1L);
+            Question question = new Question();
+            question.setId(1L);
+            user.setCurrentQuestion(question);
         }
+        System.out.println(user);
+        userRepository.saveAndFlush(user);
+    }
+
+    @Override
+    public List<User> getUserList() {
+        return userRepository.findAll();
     }
 
 }
