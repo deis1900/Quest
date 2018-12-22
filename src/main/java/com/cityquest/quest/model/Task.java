@@ -10,15 +10,17 @@ public class Task implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(updatable = false, nullable = false)
+    @Column(nullable = false)
     private Long id;
 
     @NotNull
-    @OneToOne(orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "QUESTION_ID")
     private Question question;
 
     @NotNull
-    @OneToOne(orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "ANSWER_ID")
     private Answer answer;
 
     public Task() {

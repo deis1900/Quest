@@ -9,7 +9,6 @@ import java.io.Serializable;
 public class Question implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
 
