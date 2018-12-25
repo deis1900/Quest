@@ -24,8 +24,8 @@ public class User implements Serializable {
     private Long currentIssue;
 
     @NotNull
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Question.class)
-    @JoinColumn(name = "id")
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Question.class)
+    @JoinColumn(name = "currentIssue", updatable = false, insertable = false)
     private Question currentQuestion;
 
     @OneToMany(cascade = CascadeType.ALL,

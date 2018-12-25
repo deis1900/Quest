@@ -30,8 +30,7 @@ public class TaskController {
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addNewTask(@Valid @RequestBody final Task task) {
-            taskService.addTask(task);
-        return new ResponseEntity<>("New task is added.", HttpStatus.CREATED);
+        return new ResponseEntity<>(taskService.addTask(task), HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -4,6 +4,7 @@ import com.cityquest.quest.model.Answer;
 import com.cityquest.quest.model.Question;
 import com.cityquest.quest.model.Task;
 import com.cityquest.quest.repository.TasksRepository;
+import com.cityquest.quest.utility.exptionHandler.TaskNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +24,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public void addTask(Task task) {
-        if (!getTaskList().contains(task)) {
-            tasksRepository.saveAndFlush(task);
-        }
+    public String addTask(Task task) {
+        if (task.getId().equals(task.getQuestion().getId()) & task.getId().equals(task.getAnswer().getId())) {
+                tasksRepository.saveAndFlush(task);
+                return "Row is added.";
+        } else
+            return "The fields id are not identical.";
     }
 
     @Override
@@ -43,13 +46,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Question checkAndSendTask(Answer userResponse) {
-        List<Task> tasks = tasksRepository.findAll();
-        int currentQuestionID = userResponse.getId().intValue();
-        Task currentTask = tasks.get(currentQuestionID);
-
-        if (currentTask.getAnswer().equals(userResponse)) {
-            return tasks.get(currentQuestionID + 1).getQuestion();
+        Task currentTask = tasksRepository.findById(userResponse.getId()).orElseThrow(() ->
+                new TaskNotFoundException("Task with ID " + userResponse.getId() + " was not found. "));
+        System.out.println(currentTask.getAnswer() + "  == " + userResponse.getAnswer());
+        if (currentTask.getAnswer().getAnswer().equals(userResponse.getAnswer())) {
+            Long nextTask = currentTask.getId() + 1L;
+            return tasksRepository.findById(nextTask).orElseThrow(() ->
+                    new TaskNotFoundException(" Congratulations, it was been final task.")).getQuestion();
         }
-        return tasks.get(currentQuestionID).getQuestion();
+        return currentTask.getQuestion();
     }
 }

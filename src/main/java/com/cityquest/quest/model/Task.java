@@ -9,7 +9,6 @@ import java.io.Serializable;
 public class Task implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Long id;
 
