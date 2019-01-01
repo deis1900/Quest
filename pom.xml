@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>Quest</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Quest Game</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -53,12 +53,6 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.13</version>
 		</dependency>
-        <dependency>
-            <groupId>com.vaadin.external.google</groupId>
-            <artifactId>android-json</artifactId>
-            <version>0.0.20131108.vaadin1</version>
-            <scope>compile</scope>
-        </dependency>
 
     </dependencies>
 

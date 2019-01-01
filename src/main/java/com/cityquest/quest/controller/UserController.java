@@ -6,6 +6,7 @@ import com.cityquest.quest.model.Question;
 import com.cityquest.quest.model.User;
 import com.cityquest.quest.service.TaskService;
 import com.cityquest.quest.service.UserService;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,25 +34,41 @@ public class UserController {
 
     @GetMapping(value = "/{username}/task", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Question> getQuestion(@PathVariable final String username) {
-        User user = userService.findUser(username);
+        User user = userService.findByUsername(username);
         if (username.equals(user.getUsername())) {
             return new ResponseEntity<>(user.getCurrentQuestion(), HttpStatus.OK);
         }
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(value = "/{username}/task/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/{username}/task", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Question> checkAnswer(@PathVariable final String username,
                                                 @Valid @RequestBody final Answer answer) {
-        Question question = taskService.checkAndSendTask(answer);
-        Assumption assumption = new Assumption();
-        assumption.setAssumption(answer.getAnswer());
-        userService.update(username, question.getId(), assumption);
-        return new ResponseEntity<>(question, HttpStatus.OK);
+
+        User user = userService.findByUsername(username);
+        if(user.getCurrentIssue().equals(answer.getId())){
+            Question question = taskService.checkAndSendTask(answer);
+            Assumption assumption = new Assumption();
+            assumption.setAssumption(answer.getAnswer());
+            user.addAssumptions(assumption);
+            user.setCurrentIssue(question.getId());
+            userService.update(user);
+            return new ResponseEntity<>(question, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping(value = "/{username}/info", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> infoUser(@PathVariable final String username) {
+        User user = userService.findByUsername(username);
+        if (username.equals(user.getUsername())) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<User>> getUserList () {
+    public ResponseEntity<List<User>> getUserList() {
         return new ResponseEntity<>(userService.getUserList(), HttpStatus.OK);
     }
 
@@ -61,14 +78,10 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "/{username}/info", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> infoUser(@PathVariable final String username) {
-        User user = userService.findUser(username);
-        System.out.println(user);
-        if (username.equals(user.getUsername())) {
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteUser(@PathVariable final Long userId){
+        userService.delete(userId);
+        return new ResponseEntity<>("User with id " + userId + " was deleted",HttpStatus.OK);
     }
 
 }

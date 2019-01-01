@@ -48,7 +48,7 @@ public class TaskServiceImpl implements TaskService {
     public Question checkAndSendTask(Answer userResponse) {
         Task currentTask = tasksRepository.findById(userResponse.getId()).orElseThrow(() ->
                 new TaskNotFoundException("Task with ID " + userResponse.getId() + " was not found. "));
-        System.out.println(currentTask.getAnswer() + "  == " + userResponse.getAnswer());
+
         if (currentTask.getAnswer().getAnswer().equals(userResponse.getAnswer())) {
             Long nextTask = currentTask.getId() + 1L;
             return tasksRepository.findById(nextTask).orElseThrow(() ->

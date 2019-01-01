@@ -1,7 +1,6 @@
 package com.cityquest.quest.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 @Entity
@@ -12,7 +11,6 @@ public class Question implements Serializable {
     @Column(updatable = false, nullable = false)
     private Long id;
 
-    @NotEmpty
     @Column(name = "question")
     private String question;
 

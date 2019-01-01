@@ -35,8 +35,7 @@ public class TaskController {
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteTask(@PathVariable final String id){
-        Long taskId = Long.parseLong(id);
-        taskService.removeTask(taskId);
+        taskService.removeTask(Long.parseLong(id));
         return new ResponseEntity<>("Row with " + id + " is deleted", HttpStatus.OK);
     }
 }
