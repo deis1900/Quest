@@ -12,18 +12,17 @@ import java.util.List;
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Size(min=2, message="Name should have at least 2 characters")
     @Column
     private String username;
 
-    @NotNull(message = "Current question(issue) should have been set.")
+    @NotNull
     @Column
     private Long currentIssue;
 
-    @NotNull
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Question.class)
     @JoinColumn(name = "currentIssue", updatable = false, insertable = false)
     private Question currentQuestion;

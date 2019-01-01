@@ -1,7 +1,6 @@
 package com.cityquest.quest.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "assumptions")
@@ -12,7 +11,6 @@ public class Assumption {
     @Column(updatable = false, nullable = false)
     private Long id;
 
-    @Size(min = 1, message = "Assumption should have at least 1 characters")
     @Column(name = "assumption")
     private String assumption;
 
