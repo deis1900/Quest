@@ -28,7 +28,7 @@ public class TaskController {
         return new ResponseEntity<>(taskService.getTaskList(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/upsert", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addNewTask(@Valid @RequestBody final Task task) {
         return new ResponseEntity<>(taskService.addTask(task), HttpStatus.CREATED);
     }
