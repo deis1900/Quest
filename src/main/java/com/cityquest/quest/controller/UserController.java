@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addNewUser(@RequestBody final User user) {
+    public ResponseEntity<String> addNewUser(@Valid @RequestBody final User user) {
         userService.addNewUser(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

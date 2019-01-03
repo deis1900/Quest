@@ -4,6 +4,7 @@ import com.cityquest.quest.model.Question;
 import com.cityquest.quest.model.User;
 import com.cityquest.quest.repository.UserRepository;
 import com.cityquest.quest.utility.UsernameNotFoundExeption;
+import com.cityquest.quest.utility.exptionHandler.UserIdMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long userID) {
+        if (!userRepository.findById(userID).isPresent())
+            throw new UserIdMismatchException("User with id " + userID + " isn't exist!");
         userRepository.deleteById(userID);
     }
 

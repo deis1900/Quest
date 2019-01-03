@@ -4,7 +4,9 @@ import com.cityquest.quest.model.Answer;
 import com.cityquest.quest.model.Question;
 import com.cityquest.quest.model.Task;
 import com.cityquest.quest.repository.TasksRepository;
+import com.cityquest.quest.utility.exptionHandler.TaskIdMismatchException;
 import com.cityquest.quest.utility.exptionHandler.TaskNotFoundException;
+import com.cityquest.quest.utility.exptionHandler.UserIdMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +26,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public String addTask(Task task) {
-        if (task.getId().equals(task.getQuestion().getId()) & task.getId().equals(task.getAnswer().getId())) {
+    public String upsertTask(Task task) {
+        if (task.getId().equals(task.getQuestion().getId()) && task.getId().equals(task.getAnswer().getId())) {
                 tasksRepository.saveAndFlush(task);
                 return "Row is added.";
         } else
@@ -33,7 +35,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Task getTask(Long id) {
+        return tasksRepository.findById(id).orElseThrow(() ->
+            new TaskIdMismatchException("Task with id " + id + " isn't exist!"));
+    }
+
+    @Override
     public void removeTask(Long id) {
+        if(!tasksRepository.findById(id).isPresent())
+            throw new UserIdMismatchException("Task with id " + id + " isn't exist!");
         tasksRepository.deleteById(id);
     }
 

@@ -30,12 +30,17 @@ public class TaskController {
 
     @PostMapping(value = "/upsert", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addNewTask(@Valid @RequestBody final Task task) {
-        return new ResponseEntity<>(taskService.addTask(task), HttpStatus.CREATED);
+        return new ResponseEntity<>(taskService.upsertTask(task), HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Task> getTask(@PathVariable final Long id){
+        return new ResponseEntity<>(taskService.getTask(id), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteTask(@PathVariable final String id){
-        taskService.removeTask(Long.parseLong(id));
+    public ResponseEntity<String> deleteTask(@PathVariable final Long id){
+        taskService.removeTask(id);
         return new ResponseEntity<>("Row with " + id + " is deleted", HttpStatus.OK);
     }
 }

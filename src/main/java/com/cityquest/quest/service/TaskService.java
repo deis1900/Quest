@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface TaskService {
 
-    String addTask(Task task);
+    String upsertTask(Task task);
+
+    Task getTask(Long id);
 
     void removeTask(Long id);
 

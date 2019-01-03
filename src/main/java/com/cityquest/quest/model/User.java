@@ -15,7 +15,7 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Size(min=2, message="Name should have at least 2 characters")
+    @Size(min=3, max = 32, message="Name should have at least 2 characters")
     @Column
     private String username;
 
