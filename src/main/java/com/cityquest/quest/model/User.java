@@ -16,7 +16,7 @@ public class User implements Serializable {
     private Long id;
 
     @Size(min=3, max = 32, message="Name should have at least 2 characters")
-    @Column
+    @Column(unique = true)
     private String username;
 
     @NotNull

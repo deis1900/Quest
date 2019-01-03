@@ -1,10 +1,10 @@
 package com.cityquest.quest.service;
 
-import com.cityquest.quest.model.Question;
 import com.cityquest.quest.model.User;
 import com.cityquest.quest.repository.UserRepository;
 import com.cityquest.quest.utility.UsernameNotFoundExeption;
 import com.cityquest.quest.utility.exptionHandler.UserIdMismatchException;
+import com.cityquest.quest.utility.exptionHandler.UsernameAlreadyExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +16,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final TaskService taskService;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, TaskService taskService) {
         this.userRepository = userRepository;
+        this.taskService = taskService;
     }
 
     @Override
@@ -44,11 +47,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void addNewUser(User user) {
-        userRepository.findByUsername(user.getUsername());
+        if(userRepository.findByUsername(user.getUsername()).isPresent())
+                throw new UsernameAlreadyExistException("Username " + user.getUsername() + " is already exist");
             user.setCurrentIssue(1L);
-            Question question = new Question();
-            question.setId(1L);
-            user.setCurrentQuestion(question);
+            Long taskId = user.getCurrentIssue();
+            user.setCurrentQuestion(taskService.getTask(taskId).getQuestion());
         userRepository.save(user);
     }
 
