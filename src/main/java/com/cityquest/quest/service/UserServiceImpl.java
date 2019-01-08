@@ -1,5 +1,7 @@
 package com.cityquest.quest.service;
 
+import com.cityquest.quest.model.Answer;
+import com.cityquest.quest.model.Assumption;
 import com.cityquest.quest.model.User;
 import com.cityquest.quest.repository.UserRepository;
 import com.cityquest.quest.utility.UsernameNotFoundExeption;
@@ -31,9 +33,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void delete(Long userID) {
         if (!userRepository.findById(userID).isPresent())
             throw new UserIdMismatchException("User with id " + userID + " isn't exist!");
+        System.out.println(userRepository.findById(userID) + "  " + userRepository.findById(userID).isPresent());
         userRepository.deleteById(userID);
     }
 
@@ -56,8 +60,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public List<User> getUserList() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Assumption searchAssumptionDuplicate(User user, Answer answer){
+        Assumption assumption = new Assumption();
+        if (user.getAssumptions().isEmpty()) {
+            assumption.setAssumption(answer.getAnswer());
+        }
+        else {
+            user.getAssumptions().forEach(as -> {
+                if (!as.getAssumption().equals(answer.getAnswer())) assumption.setAssumption(answer.getAnswer());
+            });
+        }
+        if (assumption.getAssumption().isEmpty()) return null;
+        return assumption;
     }
 
 }

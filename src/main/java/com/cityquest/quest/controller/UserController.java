@@ -6,7 +6,8 @@ import com.cityquest.quest.model.Question;
 import com.cityquest.quest.model.User;
 import com.cityquest.quest.service.TaskService;
 import com.cityquest.quest.service.UserService;
-import org.slf4j.LoggerFactory;
+import com.cityquest.quest.utility.exptionHandler.TaskIdMismatchException;
+import com.cityquest.quest.utility.exptionHandler.UserIdMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,16 +47,15 @@ public class UserController {
                                                 @Valid @RequestBody final Answer answer) {
 
         User user = userService.findByUsername(username);
-        if(user.getCurrentIssue().equals(answer.getId())){
+        if (user.getCurrentIssue().equals(answer.getId())) {
             Question question = taskService.checkAndSendTask(answer);
-            Assumption assumption = new Assumption();
-            assumption.setAssumption(answer.getAnswer());
-            user.addAssumptions(assumption);
+            Assumption assumption = userService.searchAssumptionDuplicate(user, answer);
+            if (assumption != null) user.addAssumptions(assumption);
             user.setCurrentIssue(question.getId());
             userService.update(user);
             return new ResponseEntity<>(question, HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        throw new TaskIdMismatchException("Id answer isn't match to the id current question");
     }
 
     @GetMapping(value = "/{username}/info", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -79,9 +79,9 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> deleteUser(@PathVariable final String userId){
+    public ResponseEntity<String> deleteUser(@PathVariable final String userId) {
         userService.delete(Long.parseLong(userId));
-        return new ResponseEntity<>("User with id " + userId + " was deleted",HttpStatus.OK);
+        return new ResponseEntity<>("User with id " + userId + " was deleted", HttpStatus.OK);
     }
 
 }
