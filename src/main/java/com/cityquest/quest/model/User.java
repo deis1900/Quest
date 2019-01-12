@@ -2,6 +2,7 @@ package com.cityquest.quest.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class User implements Serializable {
     private Long id;
 
     @Size(min=3, max = 32, message="Name should have at least 2 characters")
+    @Pattern(regexp = "^(?=.{3,32}$)(?![_.])(?!.*[_.]{2})[a-zа-яёA-ZЁА-Я0-9._]+(?<![_.])$")
     @Column(unique = true)
     private String username;
 
@@ -23,7 +25,7 @@ public class User implements Serializable {
     @Column
     private Long currentIssue;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = Question.class)
+    @OneToOne(fetch = FetchType.EAGER, targetEntity = Question.class)
     @JoinColumn(name = "currentIssue", updatable = false, insertable = false)
     private Question currentQuestion;
 
