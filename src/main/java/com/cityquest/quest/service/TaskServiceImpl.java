@@ -58,8 +58,8 @@ public class TaskServiceImpl implements TaskService {
     public Question checkAndSendTask(Answer userResponse) {
         Task currentTask = tasksRepository.findById(userResponse.getId()).orElseThrow(() ->
                 new TaskNotFoundException("Task with ID " + userResponse.getId() + " was not found. "));
-
-        if (currentTask.getAnswer().getAnswer().equals(userResponse.getAnswer())) {
+        String answer = userResponse.getAnswer().replaceAll("[^a-zа-яA-ZА-Я0-9\\s+]", "");
+        if (currentTask.getAnswer().getAnswer().equals(answer)) {
             Long nextTask = currentTask.getId() + 1L;
             return tasksRepository.findById(nextTask).orElseThrow(() ->
                     new TaskNotFoundException(" Congratulations, it was been final task.")).getQuestion();

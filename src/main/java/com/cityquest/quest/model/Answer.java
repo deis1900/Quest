@@ -1,6 +1,7 @@
 package com.cityquest.quest.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -13,6 +14,7 @@ public class Answer implements Serializable {
     private Long id;
 
     @Size(min = 1, message = "Answer should have at least 1 characters")
+    @Pattern(regexp = "^(?=.{1,255}$)(?![_.])(?!.*[_.]{2})[a-zа-яёA-ZЁА-Я0-9._]+(?<![_.])$")
     @Column(name = "answer")
     private String answer;
 
